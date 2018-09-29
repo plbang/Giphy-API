@@ -1,14 +1,14 @@
 // GLOBAL VARIABLES ======================================================
 
 // Initial array of 4 topics
-var topics = ["Dog", "Rhino", "Lion", "Wolf"];
+var topics = ["BMW", "FERRARI", "LAMBORGHINI", "PAGANI"];
 
 
 
 
 // FUNCTIONS ======================================================
 
-function animalContent() {
+function carContent() {
   var topic = $(this).attr("data-name"); // when animalContent is called, the input text is assigned a data-name attribute
   var queryURL =
     "https://api.giphy.com/v1/gifs/search?&api_key=8JwY8uq5blrbErSRt2G6FomhnlwmuO1s&limit=10&q=" +
@@ -31,12 +31,16 @@ function animalContent() {
 
       // creating a div for the gif image
       var topicImage = $("<img>");
+      topicImage.addClass("gif");
       topicImage.attr("src", imgURLstill);
       topicImage.attr("data-state", "still");
-      topicImage.addClass("gif");
+      topicImage.attr("data-still", imgURLstill);
+      topicImage.attr("data-animate", imgURLanimate);
+      
 
       // creating a p element for the rating
-      var topicRating = $("<p>").text("Rating: " + rating);
+      var r = rating.toUpperCase();
+      var topicRating = $("<p>").text("Rating: " + r);
 
       // appending both topicImage and topicRating to topicDiv
       topicDiv.append(topicImage);
@@ -71,16 +75,14 @@ function renderButtons() {
 
 function gifState() {
   var state = $(this).attr("data-state");
-
   if (state === "still") {
-    $(this).attr("src", imgURLanimate);
+    $(this).attr("src", $(this).attr("data-animate"));
     $(this).attr("data-state", "animate");
   } else {
-    $(this).attr("src", imgURLstill);
+    $(this).attr("src", $(this).attr("data-still"));
     $(this).attr("data-state", "still");
   }
 }
-
 // MAIN PROCESS ======================================================
 
 // Function for Submit Button
@@ -89,7 +91,8 @@ $("#add-topic").on("click", function(event) {
   // This line grabs the input from the textbox
   var topic = $("#topic-input")
     .val()
-    .trim();
+    .trim()
+    .toUpperCase();
 
   // Adding topic from the textbox to our array
   topics.push(topic);
@@ -100,13 +103,12 @@ $("#add-topic").on("click", function(event) {
 });
 
 
-$(".gif").on('click', function() {
-    gifState();
-});
+
 
 
 // Adding a click event listener to all elements with a class of "topic-btn" / animalContent is being passed in and referenced as a callback. Each button is given a data-name attribute and when clicked, it will then fire the animalContent function
-$(document).on("click", ".topic-btn", animalContent);
+$(document).on("click", ".topic-btn", carContent);
+$(document).on("click", ".gif", gifState)
 
 // Calling the renderButtons function to display the intial buttons
 renderButtons();
